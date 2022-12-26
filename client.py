@@ -11,10 +11,12 @@ from email.mime.text import MIMEText
 
 def send_emails(info, matchings):
 
-    trombone_email = "dcrofttest0321@gmail.com"
+    # getting user input
+    trombone_email = input("\nEnter the email you will be sending from: ")
+    password = input("Enter the 16-character password given by Google: ")
+
+    print("")
     trombone_name = "Trombone Secret Santa"
-    # password = input('Enter application password: ')
-    password = "kpovbrohervzjtuh"
 
     # loop through each entry
     for elem in info:
@@ -62,7 +64,7 @@ def send_emails(info, matchings):
         smtp_server.login(trombone_email, password)
 
         # send email
-        # smtp_server.sendmail(trombone_email, curr_sender_email, msg.as_string())
+        smtp_server.sendmail(trombone_email, curr_sender_email, msg.as_string())
         print('Successfully sent email to ' + curr_sender_name)
         smtp_server.quit()
 
@@ -88,49 +90,6 @@ def createMatchings(info):
 
     return ret
 
-    """
-    # create elements
-    ret = dict()
-    found_valid = False
-    receivers_left = list()
-    for elem in info:
-        receivers_left.append(elem)
-
-    # loop until valid dictionary made
-    while True:
-
-        for elem in info:
-
-            # check if at last element and last two equal each other: reset
-            if (len(receivers_left) == 1) and (receivers_left[0] == elem):
-                ret = dict()
-                receivers_left = list()
-                for elem in info:
-                    receivers_left.append(elem)
-                break
-
-            # if at last one and don't equal each other, then good
-            elif len(receivers_left) == 1:
-                found_valid = True
-
-            # find random receiver
-            rec = random.choice(receivers_left)
-            while (rec == elem):
-                rec = random.choice(receivers_left)
-
-            # add to ret and delete from receivers_left
-            ret[elem] = rec
-            for i in range(0, len(receivers_left)):
-                if receivers_left[i] == rec:
-                    del receivers_left[i]
-                    break
-
-        if found_valid == True:
-            break
-
-    return ret
-    """
-
 
 
 if __name__=='__main__':
@@ -139,13 +98,21 @@ if __name__=='__main__':
     if len(sys.argv) != 2:
         print("Usage: $ python3 client.py [CSV Input]")
         exit()
-    
+
     # check if file exists
     file_exists = exists(sys.argv[1])
     if (file_exists == False):
         print("No file named " + sys.argv[1])
         exit()
 
+    # check for user continuation
+    print("\nBefore continuing, make sure you have a valid Gmail account to send emails from. It should have two-factor authentification set up and a password key generated to allow access to the account through Python. If this is not the case, quit the program by typing 'q'. Otherwise, continue the program by entering 'c'.")
+    user_input = input('Enter choice here: ')
+    while (user_input != 'c') and (user_input != 'q'):
+        user_input = input("Please enter either 'q' for quit or 'c' for continue: ")
+    if user_input == 'q':
+        exit()
+   
     # key: name, value: list of email and preferences
     info = dict()
 
@@ -176,7 +143,15 @@ if __name__=='__main__':
     # function to create matchings
     matchings = createMatchings(info)
 
+    # check matchings
+    print("\nThe matchings for Secret Santa are:")
     for elem in matchings:
-        print(elem + ": " + matchings[elem])
+        print(elem + " -> " + matchings[elem])
+
+    user_input = input("\nIf these matchings look good, enter 'c' to send the confirmation emails. Otherwise, enter 'q' to quit: ")
+    while (user_input != 'c') and (user_input != 'q'):
+        user_input = input("Please enter either 'q' for quit or 'c' for continue: ")
+    if user_input == 'q':
+        exit()
 
     send_emails(info, matchings)

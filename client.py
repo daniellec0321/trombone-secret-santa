@@ -106,7 +106,7 @@ if __name__=='__main__':
         exit()
 
     # check for user continuation
-    print("\nBefore continuing, make sure you have a valid Gmail account to send emails from. It should have two-factor authentification set up and a password key generated to allow access to the account through Python. If this is not the case, quit the program by typing 'q'. Otherwise, continue the program by entering 'c'.")
+    print("\nBefore continuing, make sure you have a valid Gmail account to send emails from. It should have two-factor authentification set up and a password key generated to allow access to the account through Python.\n\nSecondly, make sure the CSV file you uploaded has 3 columns: email, name, and preferences (in that order). Also make sure there is no header to the CSV file. If any of these requirements are not met, enter 'q' to quit. Otherwise, enter 'c' to continue the program.\n")
     user_input = input('Enter choice here: ')
     while (user_input != 'c') and (user_input != 'q'):
         user_input = input("Please enter either 'q' for quit or 'c' for continue: ")

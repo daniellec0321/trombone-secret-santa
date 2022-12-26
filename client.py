@@ -11,44 +11,89 @@ from email.mime.text import MIMEText
 
 def send_emails(info, matchings):
 
-    print("in send_emails")
+    trombone_email = "dcrofttest0321@gmail.com"
+    trombone_name = "Trombone Secret Santa"
+    # password = input('Enter application password: ')
+    password='kpovbrohervzjtuh'
+
+    # loop through each entry
+    for elem in info:
+
+        # find variables
+        curr_sender_name = elem
+        curr_receiver_name = matchings[elem]
+        curr_sender_email = info[elem][0]
+        curr_receiver_preferences = info[matchings[elem]][1]
+        
+        # create message container
+        msg = MIMEMultipart('alternative')
+        msg['Subject'] = 'Trombone Secret Santa Assignments!'
+        msg['From'] = 'Trombone Secret Santa'
+        msg['To'] = curr_receiver_name
+
+        html = """
+        <html>
+            <head>
+                <style>
+                    .my_contact{color: red;}
+                </style>
+            </head>
+            <body>
+                <br></br>
+                <p>Hi """ + curr_sender_name + """!</p>
+                <p>Thank you for participating in Trombone Christmas 2023! You will be giving a gift to <b>""" + curr_receiver_name + """</b>. Try to keep the price of the gift at around $10. Make sure to have it ready by [some date] at [some time]!</p>
+                <p>""" + curr_receiver_name + """'s gift preferences are: <b>""" + curr_receiver_preferences + """</b></p>
+                <p>Email me at <span class="my_contact">daniellec0321@gmail.com</span> or text me at <span class="my_contact">719-822-3039</span> if you have any questions!</p>
+                <br><p>Out like something,</p>
+                <p>Danielle "Something" Croft</p></br>
+            </body>
+        </html>
+        """
+
+        part = MIMEText(html, 'html')
+        msg.attach(part)
+
+        smtp_server=smtplib.SMTP("smtp.gmail.com",587)
+        smtp_server.ehlo() #setting the ESMTP protocol
+        smtp_server.starttls() #setting up to TLS connection
+        smtp_server.ehlo() #calling the ehlo() again as encryption happens on calling startttls()
+        smtp_server.login(trombone_email,password) #logging into out email id
+
+        smtp_server.sendmail(trombone_email,curr_sender_email,msg.as_string())
+        print('Successfully sent an email to ' + curr_sender_name) #printing a message on sending the mail
+        smtp_server.quit()#terminating the server
 
     """
     sender_add='dcrofttest0321@gmail.com' #storing the sender's mail id
     receiver_add='daniellec0321@gmail.com' #storing the receiver's mail id
     password='kpovbrohervzjtuh' #storing the password to log in
     #creating the SMTP server object by giving SMPT server address and port number
-    smtp_server=smtplib.SMTP("smtp.gmail.com",587)
-    smtp_server.ehlo() #setting the ESMTP protocol
-    smtp_server.starttls() #setting up to TLS connection
-    smtp_server.ehlo() #calling the ehlo() again as encryption happens on calling startttls()
-    smtp_server.login(sender_add,password) #logging into out email id
-    msg_to_be_sent ='''
-    Hello, receiver!
-    Hope you are doing well.
-    Welcome to PythonGeeks!
-    '''
-    print("uhhhhhh")
-    #sending the mail by specifying the from and to address and the message 
-    smtp_server.sendmail(sender_add,receiver_add,msg_to_be_sent)
-    print('Successfully the mail is sent') #priting a message on sending the mail
-    # smtp_server.quit()#terminating the server
-    """
 
-    sender_add='dcrofttest0321@gmail.com' #storing the sender's mail id
-    receiver_add='dcrofttest0321@gmail.com' #storing the receiver's mail id
-    password='kpovbrohervzjtuh' #storing the password to log in
-    #creating the SMTP server object by giving SMPT server address and port number
+    # Create message container - the correct MIME type is multipart/alternative.
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = "Link"
+    msg['From'] = "Trombone Secret Santa"
+    msg['To'] = "Colton Kammes"
 
-    # attempt to create context
-    em = EmailMessage()
-    em['From'] = 'Danielle Croft'
-    em['To'] = 'Colton Kammes'
-    em['Subject'] = 'Trombone Secret Santa Assignment!'
-    body = """
-    Your secret santa assignemnt is <b>Caroline Lubbe</b>.
-    """
-    em.set_content(body)
+    # Create the body of the message (a plain-text and an HTML version).
+    text = "Hi!\nHow are you?\nHere is the link you wanted:\nhttp://www.python.org"
+    # html = "\
+        <html>
+            <head></head>
+            <body>
+                <p>Hi!<br>
+                    How are you?<br>
+                    Here is the <a href="http://www.python.org">link</a> you wanted.
+                </p>
+            </body>
+        </html>
+        "
+
+    # Record the MIME types of both parts - text/plain and text/html.
+    part1 = MIMEText(text, 'plain')
+    part2 = MIMEText(html, 'html')
+    msg.attach(part1)
+    msg.attach(part2)
 
     smtp_server=smtplib.SMTP("smtp.gmail.com",587)
     smtp_server.ehlo() #setting the ESMTP protocol
@@ -56,18 +101,21 @@ def send_emails(info, matchings):
     smtp_server.ehlo() #calling the ehlo() again as encryption happens on calling startttls()
     smtp_server.login(sender_add,password) #logging into out email id
     #writing the message in HTML
-    html_msg="""From: Trombone Secret Santa
+    html_msg="From: Trombone Secret Santa
     To: daniellec0321@gmail.com
     MIME-Version: 1.0
     Content-type: text/html
     Subject: Trombone Secret Santa Assignment!
     <br><p> Hi there! You are getting a present for <b>Colton Kammes.</b></p></br>
-    """
+    "
     #sending the mail by specifying the from and to address and the message 
     # smtp_server.sendmail(sender_add,receiver_add,html_msg)
-    smtp_server.sendmail(sender_add,receiver_add,em.as_string())
+    # smtp_server.sendmail(sender_add,receiver_add,em.as_string())
+    smtp_server.sendmail(sender_add,receiver_add,msg.as_string())
     print('Successfully the mail is sent') #printing a message on sending the mail
     smtp_server.quit()#terminating the server
+
+    """
  
 
 

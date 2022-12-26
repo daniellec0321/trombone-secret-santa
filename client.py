@@ -13,7 +13,8 @@ def send_emails(info, matchings):
 
     trombone_email = "dcrofttest0321@gmail.com"
     trombone_name = "Trombone Secret Santa"
-    password = input('Enter application password: ')
+    # password = input('Enter application password: ')
+    password = "kpovbrohervzjtuh"
 
     # loop through each entry
     for elem in info:
@@ -61,7 +62,7 @@ def send_emails(info, matchings):
         smtp_server.login(trombone_email, password)
 
         # send email
-        smtp_server.sendmail(trombone_email, curr_sender_email, msg.as_string())
+        # smtp_server.sendmail(trombone_email, curr_sender_email, msg.as_string())
         print('Successfully sent email to ' + curr_sender_name)
         smtp_server.quit()
 
@@ -69,6 +70,25 @@ def send_emails(info, matchings):
 
 def createMatchings(info):
 
+    # create list with names
+    names = list()
+    for elem in info:
+        names.append(elem)
+
+    # shuffle the list
+    random.shuffle(names)
+
+    # create return dictionary
+    ret = dict()
+    for i in range(0, len(names)-1):
+        ret[names[i]] = names[i+1]
+
+    # set last value
+    ret[names[len(names)-1]] = names[0]
+
+    return ret
+
+    """
     # create elements
     ret = dict()
     found_valid = False
@@ -109,6 +129,7 @@ def createMatchings(info):
             break
 
     return ret
+    """
 
 
 
@@ -154,5 +175,8 @@ if __name__=='__main__':
 
     # function to create matchings
     matchings = createMatchings(info)
+
+    for elem in matchings:
+        print(elem + ": " + matchings[elem])
 
     send_emails(info, matchings)

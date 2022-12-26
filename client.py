@@ -2,7 +2,69 @@ import sys
 from os.path import exists
 import csv
 import random
- 
+import smtplib
+from email.message import EmailMessage
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
+
+
+def send_emails(info, matchings):
+
+    trombone_email = "dcrofttest0321@gmail.com"
+    trombone_name = "Trombone Secret Santa"
+    password = input('Enter application password: ')
+
+    # loop through each entry
+    for elem in info:
+
+        # find variables
+        curr_sender_name = elem
+        curr_receiver_name = matchings[elem]
+        curr_sender_email = info[elem][0]
+        curr_receiver_preferences = info[matchings[elem]][1]
+        
+        # create message container
+        msg = MIMEMultipart('alternative')
+        msg['Subject'] = 'Trombone Secret Santa Assignments!'
+        msg['From'] = 'Trombone Secret Santa'
+        msg['To'] = curr_receiver_name
+
+        html = """
+        <html>
+            <head>
+                <style>
+                    .my_contact{color: red;}
+                </style>
+            </head>
+            <body>
+                <br></br>
+                <p>Hi """ + curr_sender_name + """!</p>
+                <p>Thank you for participating in Trombone Christmas 2023! You will be giving a gift to <b>""" + curr_receiver_name + """</b>. Try to keep the price of the gift at around $10. Make sure to have it ready by [some date] at [some time]!</p>
+                <p>""" + curr_receiver_name + """'s gift preferences are: <b>""" + curr_receiver_preferences + """</b></p>
+                <p>Email me at daniellec0321@gmail.com or text me at <span class="my_contact">719-822-3039</span> if you have any questions!</p>
+                <br><p>Out like something,</p>
+                <p>Danielle "Something" Croft</p></br>
+            </body>
+        </html>
+        """
+
+        # attach data to message
+        part = MIMEText(html, 'html')
+        msg.attach(part)
+
+        # connect to server
+        smtp_server=smtplib.SMTP("smtp.gmail.com", 587)
+        smtp_server.ehlo()
+        smtp_server.starttls()
+        smtp_server.ehlo()
+        smtp_server.login(trombone_email, password)
+
+        # send email
+        smtp_server.sendmail(trombone_email, curr_sender_email, msg.as_string())
+        print('Successfully sent email to ' + curr_sender_name)
+        smtp_server.quit()
+
 
 
 def createMatchings(info):
@@ -93,5 +155,4 @@ if __name__=='__main__':
     # function to create matchings
     matchings = createMatchings(info)
 
-    for elem in matchings:
-        print(elem + ": " + matchings[elem])
+    send_emails(info, matchings)

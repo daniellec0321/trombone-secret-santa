@@ -97,13 +97,13 @@ if __name__=='__main__':
     # check for input
     if len(sys.argv) != 2:
         print("Usage: $ python3 client.py [CSV Input]")
-        exit()
+        sys.exit(1)
 
     # check if file exists
     file_exists = exists(sys.argv[1])
     if (file_exists == False):
         print("No file named " + sys.argv[1])
-        exit()
+        sys.exit(1)
 
     # check for user continuation
     print("\nBefore continuing, make sure you have a valid Gmail account to send emails from. It should have two-factor authentification set up and a password key generated to allow access to the account through Python.\n\nSecondly, make sure the CSV file you uploaded has 3 columns: email, name, and preferences (in that order). Also make sure there is no header to the CSV file. If any of these requirements are not met, enter 'q' to quit. Otherwise, enter 'c' to continue the program.\n")
@@ -111,7 +111,7 @@ if __name__=='__main__':
     while (user_input != 'c') and (user_input != 'q'):
         user_input = input("Please enter either 'q' for quit or 'c' for continue: ")
     if user_input == 'q':
-        exit()
+        sys.exit(1)
    
     # key: name, value: list of email and preferences
     info = dict()
@@ -120,12 +120,10 @@ if __name__=='__main__':
     csvList = list()
 
     # read file
-    with open(sys.argv[1], mode ='r')as file:
+    with open(sys.argv[1], mode ='r') as file:
         
-        # reading the CSV file
+        # reading in the contents of the CSV file
         csvFile = csv.reader(file)
-
-        # displaying the contents of the CSV file
         for lines in csvFile:
             csvList.append(lines)
 
@@ -135,7 +133,7 @@ if __name__=='__main__':
         # check if already in dictionary
         if line[1] in info:
             print('Duplicate entry "' + line[1] + '" in info dictionary!')
-            exit()
+            sys.exit(1)
 
         # put into dictionary
         info[line[1]] = [line[0], line[2]]
@@ -152,6 +150,6 @@ if __name__=='__main__':
     while (user_input != 'c') and (user_input != 'q'):
         user_input = input("Please enter either 'q' for quit or 'c' for continue: ")
     if user_input == 'q':
-        exit()
+        sys.exit(1)
 
     send_emails(info, matchings)

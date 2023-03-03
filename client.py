@@ -81,12 +81,14 @@ def createMatchings(info):
     random.shuffle(names)
 
     # create return dictionary
+    '''
     ret = dict()
     for i in range(0, len(names)-1):
         ret[names[i]] = names[i+1]
-
-    # set last value
-    ret[names[len(names)-1]] = names[0]
+    '''
+    ret = dict()
+    for i in range(0, len(names)):
+        ret[names[i]] = names[(i+1)%len(names)]
 
     return ret
 
